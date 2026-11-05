@@ -1,0 +1,8 @@
+package cn.wulian.fitness;
+import org.json.*;import java.net.*;import java.io.*;import java.nio.charset.StandardCharsets;
+import static cn.wulian.fitness.Jsons.*;
+public class Api {
+ public static final String BASE="https://five-training-sync-dian.esteemedbottle.chatgpt.site";
+ public static class Error extends Exception{public final int status;public final JSONObject data;Error(int s,JSONObject d){super(d.optString("error","服务异常"));status=s;data=d;}}
+ public static JSONObject call(String path,String method,JSONObject data,String token)throws Exception{HttpURLConnection c=(HttpURLConnection)new URL(BASE+path).openConnection();c.setConnectTimeout(15000);c.setReadTimeout(20000);c.setInstanceFollowRedirects(false);c.setRequestMethod(method);c.setRequestProperty("Accept","application/json");if(!token.isEmpty())c.setRequestProperty("Authorization","Bearer "+token);try{if(data!=null){c.setDoOutput(true);c.setRequestProperty("Content-Type","application/json");try(OutputStream out=c.getOutputStream()){out.write(data.toString().getBytes(StandardCharsets.UTF_8));}}int status=c.getResponseCode();InputStream in=status>=400?c.getErrorStream():c.getInputStream();if(in==null)throw new IOException("网络服务没有响应");ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] buf=new byte[4096];int n;while((n=in.read(buf))!=-1){out.write(buf,0,n);if(out.size()>5000000)throw new IOException("数据过大");}JSONObject result;try{result=obj(out.toString("UTF-8"));}catch(Exception e){throw new IOException("暂时无法连接云服务，请稍后重试");}if(status>=300)throw new Error(status,result);return result;}finally{c.disconnect();}}
+}

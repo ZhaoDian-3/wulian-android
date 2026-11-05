@@ -1,0 +1,1 @@
+export default function Home(){return <main><div className="logo">五练 /</div><span className="eyebrow">ANDROID · TRAINING JOURNAL</span><h1>训练在手机，进步有记录。</h1><p>这是五练安卓 App 的账号授权与云同步服务。请在 App 内登录、记录训练并分享计划。</p><ul><li>独立安卓界面，支持离线记录</li><li>同一 ChatGPT 账号跨设备同步</li><li>各人记录隔离，仅主动分享计划</li></ul><a href="/privacy">数据与隐私说明 →</a></main>}
