@@ -21,8 +21,9 @@ jobs:
       - name: Verify Android signature
         shell: bash
         run: |
-          sdkmanager "build-tools;35.0.0"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs releases/wulian-1.0.0.apk
+          sudo apt-get update -qq
+          sudo apt-get install -y apksigner
+          apksigner verify --verbose --print-certs releases/wulian-1.0.0.apk
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
