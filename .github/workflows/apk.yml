@@ -1,0 +1,37 @@
+name: Download signed APK
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'releases/**'
+      - '.github/workflows/apk.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    name: Verify and package signed APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify APK checksum
+        working-directory: releases
+        run: sha256sum --check SHA256SUMS
+      - name: Verify Android signature
+        shell: bash
+        run: |
+          sdkmanager "build-tools;35.0.0"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs releases/wulian-1.0.0.apk
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: wulian-1.0.0-apk
+          path: releases/wulian-1.0.0.apk
+          if-no-files-found: error
+          retention-days: 90
+      - name: Download instructions
+        run: |
+          echo '### 五练 APK 下载' >> "$GITHUB_STEP_SUMMARY"
+          echo '在本页 Artifacts 中下载 wulian-1.0.0-apk，解压 ZIP 后安装 APK。' >> "$GITHUB_STEP_SUMMARY"
+          echo '这是已签名的 1.0.0 发行包，源码对应 398bc066ce755eac34fafebfb7c19ba318d65bee。此流程验证并分发已有发行包，不会重新签名或自动发布源码修改。' >> "$GITHUB_STEP_SUMMARY"
