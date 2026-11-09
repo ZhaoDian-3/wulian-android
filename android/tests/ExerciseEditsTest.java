@@ -19,6 +19,16 @@ public class ExerciseEditsTest {
    String before=item.toString();boolean rejected=false;try{ExerciseEdits.apply(item,bad[0],bad[1],bad[2]);}catch(IllegalArgumentException ex){rejected=true;}
    check(rejected&&before.equals(item.toString()));
   }
+  JSONObject deletion=o("day",o("items",new JSONArray().put(o("name","A")).put(o("name","B")).put(o("name","C"))),"rows",new JSONArray().put(new JSONArray().put(o("weight",10))).put(new JSONArray().put(o("weight",20))).put(new JSONArray().put(o("weight",30,"done",true))));
+  JSONObject history=copy(deletion);ExerciseEdits.removeRecordItem(deletion,1);
+  check(deletion.optJSONObject("day").optJSONArray("items").optJSONObject(1).optString("name").equals("C"));
+  check(deletion.optJSONArray("rows").optJSONArray(1).optJSONObject(0).optInt("weight")==30);
+  check(deletion.optJSONArray("rows").optJSONArray(1).optJSONObject(0).optBoolean("done"));
+  check(history.optJSONArray("rows").length()==3);
+  ExerciseEdits.removeRecordItem(deletion,0);String beforeDelete=deletion.toString();boolean blocked=false;
+  try{ExerciseEdits.removeRecordItem(deletion,0);}catch(IllegalArgumentException ex){blocked=true;}check(blocked&&beforeDelete.equals(deletion.toString()));
+  JSONObject broken=copy(history);broken.optJSONArray("rows").remove(0);String beforeBroken=broken.toString();blocked=false;
+  try{ExerciseEdits.removeRecordItem(broken,1);}catch(IllegalArgumentException ex){blocked=true;}check(blocked&&beforeBroken.equals(broken.toString()));
   System.out.println("PASS: edit metadata, preserve sets/history, independent plan scope, clear notes, reject invalid input");
  }
 }
