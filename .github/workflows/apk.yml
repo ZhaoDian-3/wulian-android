@@ -23,16 +23,16 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y apksigner
-          apksigner verify --verbose --print-certs releases/wulian-1.0.0.apk
+          apksigner verify --verbose --print-certs releases/wulian-1.1.0.apk
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: wulian-1.0.0-apk
-          path: releases/wulian-1.0.0.apk
+          name: wulian-1.1.0-apk
+          path: releases/wulian-1.1.0.apk
           if-no-files-found: error
           retention-days: 90
       - name: Download instructions
         run: |
           echo '### 五练 APK 下载' >> "$GITHUB_STEP_SUMMARY"
-          echo '在本页 Artifacts 中下载 wulian-1.0.0-apk，解压 ZIP 后安装 APK。' >> "$GITHUB_STEP_SUMMARY"
-          echo '这是已签名的 1.0.0 发行包，源码对应 398bc066ce755eac34fafebfb7c19ba318d65bee。此流程验证并分发已有发行包，不会重新签名或自动发布源码修改。' >> "$GITHUB_STEP_SUMMARY"
+          echo '在本页 Artifacts 中下载 wulian-1.1.0-apk，解压 ZIP 后安装 APK。' >> "$GITHUB_STEP_SUMMARY"
+          echo '这是已签名的 1.1.0 发行包，支持在训练页编辑动作名称、分类和注释。此流程验证并分发已有发行包，不会重新签名或自动发布源码修改。' >> "$GITHUB_STEP_SUMMARY"
